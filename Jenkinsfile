@@ -27,6 +27,15 @@ pipeline {
               pitmutation mutationStatsFile: '**/target/pit-reports/**/mutations.xml'
         }
       }
-    }   
+    }
+        stage('Static Code Analysis'){
+            steps{
+                script{
+                withSonarQubeEnv(credentialsId: 'sonar-token') {
+                    sh "mvn clean package sonar:sonar"
+                    }                    
+                }
+            }
+        } 
   }
 }
