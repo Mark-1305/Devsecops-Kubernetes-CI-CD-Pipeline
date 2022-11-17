@@ -43,6 +43,23 @@ pipeline {
                     waitForQualityGate abortPipeline: false, credentialsId: 'sonarqube-token'
                 } 
             }
+        }
+      stage('Docker build and push'){
+           steps{
+            withDockerRegistry([credentialsId: "docker-hub", url: ""]) {
+            sh 'printenv'
+            sh 'sudo docker build -t manoharshetty507/numeric-app:""$GIT_COMMIT"" .'
+            sh 'docker push manoharshetty507/numeric-app:""$GIT_COMMIT""'  
+          }
+        }
+      }
+    stage('Kubernetes Deployment - Dev'){
+          steps{
+            withKubeConfig([credentialsId: 'kubeconfig']) {
+            sh "sed -i 's#replace#manoharshetty507/numeric-app:${GIT_COMMIT}#g' k8s_deployment_service.yaml"
+            sh "kubectl apply -f k8s_deployment_service.yaml "
         } 
+      }   
+    }
   }
 }
