@@ -12,12 +12,11 @@ pipeline {
               sh "mvn test"
             }     
            }  
-        }  
         stage('Mutation Tests - PIT') {
           steps {
             sh "mvn org.pitest:pitest-maven:mutationCoverage"
            }
-    }
+        }
         stage('Static Code Analysis'){
             steps{
                 script{
@@ -55,6 +54,7 @@ pipeline {
             sh "kubectl apply -f k8s_deployment_service.yaml "
             }
         }
+    }
     post { 
         always {
             junit 'target/surefire-reports/*.xml'
@@ -64,8 +64,8 @@ pipeline {
 
         }
       }     
-    }
   }
+}
 
 
 
