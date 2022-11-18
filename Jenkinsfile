@@ -1,13 +1,13 @@
 pipeline {
   agent any
   stages {
-      stage('Build Artifact') {
+        stage('Build Artifact') {
             steps {
               sh "mvn clean package -DskipTests=true"
               archive 'target/*.jar'
             }
         } 
-       stage('Unit Tests - Junit and Jacoco') {
+        stage('Unit Tests - Junit and Jacoco') {
             steps {
               sh "mvn test"
             }     
@@ -18,6 +18,42 @@ pipeline {
               }
            }  
         }
+        stage('Mutation Tests - PIT') {
+            steps {
+                sh "mvn org.pitest:pitest-maven:mutationCoverage"
+            }
+            post {
+                always {
+            pitmutation mutationStatsFile: '**/target/pit-reports/**/mutations.xml'
+                }
+            }
+        }
+        stage('Static Code Analysis'){
+            steps{
+                script{
+                withSonarQubeEnv(credentialsId: 'sonar-token') {
+                    sh "mvn clean package sonar:sonar"
+                 }                    
+              }
+           }
+        }
+        stage('Quality Gate Status'){
+            steps{
+                script{
+                waitForQualityGate abortPipeline: false, credentialsId: 'sonar-token'
+                } 
+            }
+        }
+       stage('Vulnerability Scan - Docker') {
+          steps {
+          		sh "mvn dependency-check:check"
+          }
+        post {
+          always{
+            dependencyCheckPublisher pattern: 'target/dependency-check-report.xml'
+          }
+        }
+      }
       stage('Docker build and push'){
            steps{
             withDockerRegistry([credentialsId: "docker-hub", url: ""]) {
@@ -27,32 +63,5 @@ pipeline {
           }
         }
       }
-    stage('Mutation Tests - PIT') {
-      steps {
-        sh "mvn org.pitest:pitest-maven:mutationCoverage"
-      }
-      post {
-        always {
-          pitmutation mutationStatsFile: '**/target/pit-reports/**/mutations.xml'
-        }
-      }
-    }
-    stage('Static Code Analysis'){
-       steps{
-         script{
-            withSonarQubeEnv(credentialsId: 'sonar-token') {
-               sh "mvn clean package sonar:sonar"
-                 }                    
-              }
-           }
-        }
-    stage('Quality Gate Status'){
-       steps{
-          script{
-              waitForQualityGate abortPipeline: false, credentialsId: 'sonar-token'
-                } 
-            }
-        }
     }   
 }
-
