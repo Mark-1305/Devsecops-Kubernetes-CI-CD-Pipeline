@@ -54,9 +54,7 @@ pipeline {
             sh "sed -i 's#replace#manoharshetty507/numeric-app:${GIT_COMMIT}#g' k8s_deployment_service.yaml"
             sh "kubectl apply -f k8s_deployment_service.yaml "
             }
-        } 
-      }
-  }
+        }
     post { 
         always {
             junit 'target/surefire-reports/*.xml'
@@ -65,4 +63,9 @@ pipeline {
             dependencyCheckPublisher pattern: 'target/dependency-check-report.xml'
 
         }
-      }
+      }     
+    }
+  }
+
+
+
