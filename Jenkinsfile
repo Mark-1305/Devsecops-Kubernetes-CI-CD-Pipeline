@@ -1,6 +1,12 @@
 pipeline {
   agent any
   stages {
+      stage('Clone repository') {
+      current = "Stage Cloning"
+      checkout scm
+      GIT_BRANCH = gitscm.GIT_BRANCH.replace("/", "");
+      GIT_BRANCH=GIT_BRANCH.split("origin")
+    }
         stage('Build Artifact') {
             steps {
               sh "mvn clean package -DskipTests=true"
