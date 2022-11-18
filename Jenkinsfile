@@ -11,10 +11,6 @@ pipeline {
             steps {
               sh "mvn test"
             }     
-            post {
-              always {
-
-              }
            }  
         }  
         stage('Mutation Tests - PIT') {
@@ -61,8 +57,6 @@ pipeline {
         } 
       }
   }
-
-}
     post { 
         always {
             junit 'target/surefire-reports/*.xml'
