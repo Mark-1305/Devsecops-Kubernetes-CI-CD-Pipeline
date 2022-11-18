@@ -42,12 +42,12 @@ pipeline {
            steps{
             withDockerRegistry([credentialsId: "docker-hub", url: ""]) {
             sh 'printenv'
-            sh 'sudo docker build -t manoharshetty507/devsecops-numeric-app:""$v1.$BUILD_ID"" .'
+            sh 'sudo docker build -t manoharshetty507/devsecops-numeric-app:""v1.$BUILD_ID"" .'
             sh 'docker push manoharshetty507/devsecops-numeric-app:""$v1.$BUILD_ID""'  
           }
         }
       }
-    stage('Kubernetes Deployment - Jenkins-Pipeline'){
+    stage('Kubernetes Deployment - Dev'){
           steps{
             withKubeConfig([credentialsId: 'kubeconfig']) {
             sh "sed -i 's#replace#manoharshetty507/devsecops-numeric-app:${v1.$BUILD_ID}#g' k8s_deployment_service.yaml"
