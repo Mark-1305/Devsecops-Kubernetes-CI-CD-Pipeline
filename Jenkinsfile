@@ -43,7 +43,7 @@ pipeline {
             withDockerRegistry([credentialsId: "docker-hub", url: ""]) {
             sh 'printenv'
             sh 'sudo docker build -t manoharshetty507/devsecops-numeric-app:""v1.$BUILD_ID"" .'
-            sh 'docker push manoharshetty507/devsecops-numeric-app:""$v1.$BUILD_ID""'  
+            sh 'docker push manoharshetty507/devsecops-numeric-app:""v1.$BUILD_ID""'  
           }
         }
       }
