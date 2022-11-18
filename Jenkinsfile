@@ -1,8 +1,6 @@
 pipeline {
   agent any
     environment  {
-        DOCKERHUB_USERNAME = "manoharshetty507"
-        APP_NAME = "jenkins-kube-argocd"
         IMAGE_TAG = "${BUILD_NUMBER}"
         IMAGE_NAME = "manoharshetty507/devsecops-numeric-app"
 
@@ -57,7 +55,7 @@ pipeline {
     stage('Kubernetes Deployment - Jenkins-Pipeline'){
           steps{
             withKubeConfig([credentialsId: 'kubeconfig']) {
-            sh "sed -i 's#replace#manoharshetty507/devsecops-numeric-app:""v1.$BUILD_ID""#g' k8s_deployment_service.yaml"
+            sh "sed -i 's#replace#manoharshetty507/devsecops-numeric-app:$IMAGE_TAG#g' k8s_deployment_service.yaml"
             sh "kubectl apply -f k8s_deployment_service.yaml "
             }
         }
