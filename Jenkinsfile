@@ -50,7 +50,7 @@ pipeline {
     stage('Kubernetes Deployment - Jenkins-Pipeline'){
           steps{
             withKubeConfig([credentialsId: 'kubeconfig']) {
-            sh "sed -i 's#replace#manoharshetty507/devsecops-numeric-app:${""v1.$BUILD_ID""}#g' k8s_deployment_service.yaml"
+            sh "sed -i 's#replace#manoharshetty507/devsecops-numeric-app:""v1.$BUILD_ID""#g' k8s_deployment_service.yaml"
             sh "kubectl apply -f k8s_deployment_service.yaml "
             }
         }
