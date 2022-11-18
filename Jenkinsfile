@@ -42,15 +42,15 @@ pipeline {
            steps{
             withDockerRegistry([credentialsId: "docker-hub", url: ""]) {
             sh 'printenv'
-            sh 'sudo docker build -t manoharshetty507/numeric-app:""$GIT_COMMIT"" .'
-            sh 'docker push manoharshetty507/numeric-app:""$GIT_COMMIT""'  
+            sh 'sudo docker build -t manoharshetty507/devsecops-numeric-app:""$v1.$BUILD_ID"" .'
+            sh 'docker push manoharshetty507/devsecops-numeric-app:""$v1.$BUILD_ID""'  
           }
         }
       }
-    stage('Kubernetes Deployment - Dev'){
+    stage('Kubernetes Deployment - Jenkins-Pipeline'){
           steps{
             withKubeConfig([credentialsId: 'kubeconfig']) {
-            sh "sed -i 's#replace#manoharshetty507/numeric-app:${GIT_COMMIT}#g' k8s_deployment_service.yaml"
+            sh "sed -i 's#replace#manoharshetty507/devsecops-numeric-app:${v1.$BUILD_ID}#g' k8s_deployment_service.yaml"
             sh "kubectl apply -f k8s_deployment_service.yaml "
             }
         }
@@ -65,7 +65,4 @@ pipeline {
             dependencyCheckPublisher pattern: 'target/dependency-check-report.xml'
 
         }
-      }     
-
-
-
+      }
