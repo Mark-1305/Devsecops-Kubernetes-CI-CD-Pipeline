@@ -48,7 +48,7 @@ pipeline {
           steps {
           	"Dependency Scan": {
           		sh "mvn dependency-check:check"
-     		},
+     		}
         post {
           always{
             dependencyCheckPublisher pattern: 'target/dependency-check-report.xml'
