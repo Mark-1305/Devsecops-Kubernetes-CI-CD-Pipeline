@@ -21,7 +21,7 @@ pipeline {
         stage('Mutation Tests - PIT') {
           steps {
             sh "mvn org.pitest:pitest-maven:mutationCoverage"
-      }
+           }
           post {
             always {
               pitmutation mutationStatsFile: '**/target/pit-reports/**/mutations.xml'
@@ -46,9 +46,9 @@ pipeline {
         }
        stage('Vulnerability Scan - Docker') {
           steps {
-          	"Dependency Scan": {
           		sh "mvn dependency-check:check"
-     		}
+          }
+
         post {
           always{
             dependencyCheckPublisher pattern: 'target/dependency-check-report.xml'
@@ -70,9 +70,9 @@ pipeline {
             withKubeConfig([credentialsId: 'kubeconfig']) {
             sh "sed -i 's#replace#manoharshetty507/numeric-app:${GIT_COMMIT}#g' k8s_deployment_service.yaml"
             sh "kubectl apply -f k8s_deployment_service.yaml "
+            }
         } 
-      }   
-    }
+      }
+    }   
   }
-}
-}
+
